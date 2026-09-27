@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joysfarm - Productos Naturales</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Joysfarm</h1>
+        <nav>
+            <ul>
+                <li><a href="#productos">Productos</a></li>
+                <li><a href="#ordenar">Ordenar</a></li>
+                <li><a href="#resenas">Reseñas</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="productos">
+            <h2>Nuestros Productos</h2>
+            <div id="lista-productos" class="productos-grid">
+                <!-- Los productos se cargarán aquí -->
+            </div>
+        </section>
+
+        <section id="ordenar">
+            <h2>Realizar Orden</h2>
+            <form id="formulario-orden">
+                <input type="text" id="nombre" placeholder="Nombre completo" required>
+                <input type="email" id="email" placeholder="Correo electrónico" required>
+                <select id="producto-seleccionado" required>
+                    <option value="">Selecciona un producto</option>
+                </select>
+                <input type="number" id="cantidad" placeholder="Cantidad" min="1" value="1" required>
+                <button type="submit">Realizar Orden</button>
+            </form>
+        </section>
+
+        <section id="resenas">
+            <h2>Reseñas de Clientes</h2>
+            <div id="lista-resenas">
+                <!-- Las reseñas se cargarán aquí -->
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 Joysfarm. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
