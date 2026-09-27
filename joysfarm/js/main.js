@@ -1,4 +1,5 @@
 // Configuración de Supabase
+// En producción, estas variables se deberían cargar desde variables de entorno
 const supabaseUrl = 'TU_SUPABASE_URL';
 const supabaseKey = 'TU_SUPABASE_ANON_KEY';
 const supabase = createClient(supabaseUrl, supabaseKey);
@@ -32,7 +33,7 @@ async function cargarProductos() {
             const productoCard = document.createElement('div');
             productoCard.className = 'producto-card';
             productoCard.innerHTML = `
-                <img src="${producto.imagen_url}" alt="${producto.nombre}" class="producto-imagen">
+                <img src="${producto.imagen_url || 'https://via.placeholder.com/300x200?text=Producto'}" alt="${producto.nombre}" class="producto-imagen">
                 <h3>${producto.nombre}</h3>
                 <p>Precio: $${producto.precio}</p>
                 <p>${producto.descripcion}</p>
@@ -48,6 +49,7 @@ async function cargarProductos() {
         });
     } catch (error) {
         console.error('Error cargando productos:', error);
+        listaProductos.innerHTML = '<p>Error al cargar productos</p>';
     }
 }
 
@@ -63,6 +65,11 @@ async function cargarResenas() {
         
         listaResenas.innerHTML = '';
         
+        if (data.length === 0) {
+            listaResenas.innerHTML = '<p>Aún no hay reseñas</p>';
+            return;
+        }
+        
         data.forEach(resena => {
             const resenaCard = document.createElement('div');
             resenaCard.className = 'resena-card';
@@ -75,6 +82,7 @@ async function cargarResenas() {
         });
     } catch (error) {
         console.error('Error cargando reseñas:', error);
+        listaResenas.innerHTML = '<p>Error al cargar reseñas</p>';
     }
 }
 
@@ -86,6 +94,12 @@ formularioOrden.addEventListener('submit', async (e) => {
     const email = document.getElementById('email').value;
     const productoId = document.getElementById('producto-seleccionado').value;
     const cantidad = document.getElementById('cantidad').value;
+    
+    // Validación básica
+    if (!nombre || !email || !productoId || !cantidad) {
+        alert('Por favor completa todos los campos');
+        return;
+    }
     
     try {
         // Insertar nueva orden
@@ -111,3 +125,21 @@ formularioOrden.addEventListener('submit', async (e) => {
         alert('Error al realizar la orden. Inténtalo de nuevo.');
     }
 });
+
+// Función para probar conexión con Supabase (opcional)
+async function testSupabaseConnection() {
+    try {
+        const { data, error } = await supabase
+            .from('productos')
+            .select('count');
+            
+        if (error) throw error;
+        
+        console.log('Conexión a Supabase exitosa');
+    } catch (error) {
+        console.error('Error de conexión a Supabase:', error);
+    }
+}
+
+// Probar conexión cuando se carga la página
+testSupabaseConnection();
