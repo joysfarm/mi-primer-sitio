@@ -1,0 +1,11 @@
+{
+  "servers": [
+    {
+      "name": "supabase",
+      "url": "https://mcp.supabase.com/mcp",
+      "auth": {
+        "type": "bearer"
+      }
+    }
+  ]
+}

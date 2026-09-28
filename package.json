@@ -1,0 +1,22 @@
+{
+  "name": "joysfarm-website",
+  "version": "1.0.0",
+  "description": "Sitio web para Joysfarm - tienda virtual de productos naturales",
+  "main": "index.js",
+  "scripts": {
+    "start": "http-server joysfarm -p 8080",
+    "dev": "concurrently \"http-server joysfarm -p 8080\" \"echo 'Servidor en http://localhost:8080'\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "joysfarm",
+    "ecommerce",
+    "website"
+  ],
+  "author": "Joysfarm Team",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^7.0.0",
+    "http-server": "^14.0.0"
+  }
+}
