@@ -8,16 +8,7 @@ Sitio web para Joysfarm, una tienda virtual de productos naturales.
 - `css/style.css`: Estilos CSS para el diseño responsive
 - `js/main.js`: Script JavaScript para la lógica del frontend y conexión con Supabase
 
-## Configuración de Supabase
 
-Para conectar el sitio web con Supabase:
-
-1. Crea una cuenta en [Supabase](https://supabase.com/)
-2. Crea un nuevo proyecto
-3. Obtén las credenciales:
-   - `SUPABASE_URL`
-   - `SUPABASE_ANON_KEY`
-4. Reemplaza los valores en `js/main.js`:
 
 ```javascript
 const supabaseUrl = 'TU_SUPABASE_URL';
