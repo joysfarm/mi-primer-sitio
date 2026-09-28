@@ -5,50 +5,105 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Joysfarm - Productos Naturales</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+    <!-- Header con diseño mejorado -->
     <header>
-        <h1>Joysfarm</h1>
-        <nav>
-            <ul>
-                <li><a href="#productos">Productos</a></li>
-                <li><a href="#ordenar">Ordenar</a></li>
-                <li><a href="#resenas">Reseñas</a></li>
-            </ul>
-        </nav>
+        <div class="header-container">
+            <h1 class="logo">Joysfarm</h1>
+            <nav class="nav-menu">
+                <ul>
+                    <li><a href="#productos"><i class="fas fa-leaf"></i> Productos</a></li>
+                    <li><a href="#ordenar"><i class="fas fa-shopping-cart"></i> Ordenar</a></li>
+                    <li><a href="#resenas"><i class="fas fa-comments"></i> Reseñas</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <button id="cart-button" class="cart-button">
+                    <i class="fas fa-shopping-cart"></i> 
+                    <span class="cart-count">0</span>
+                </button>
+            </div>
+        </div>
     </header>
 
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">Productos Naturales de la Más Alta Calidad</h1>
+            <p class="hero-subtitle">Descubre nuestra selección de productos orgánicos y ecológicos cuidadosamente seleccionados para tu bienestar.</p>
+            <a href="#productos" class="cta-button">Explorar Productos</a>
+        </div>
+    </section>
+
+    <!-- Main Content -->
     <main>
-        <section id="productos">
-            <h2>Nuestros Productos</h2>
+        <!-- Sección de productos destacados -->
+        <section id="productos" class="featured-products">
+            <h2 class="section-title"><i class="fas fa-leaf"></i> Nuestros Productos</h2>
             <div id="lista-productos" class="productos-grid">
                 <!-- Los productos se cargarán aquí -->
             </div>
         </section>
 
-        <section id="ordenar">
-            <h2>Realizar Orden</h2>
-            <form id="formulario-orden">
-                <input type="text" id="nombre" placeholder="Nombre completo" required>
-                <input type="email" id="email" placeholder="Correo electrónico" required>
-                <select id="producto-seleccionado" required>
-                    <option value="">Selecciona un producto</option>
-                </select>
-                <input type="number" id="cantidad" placeholder="Cantidad" min="1" value="1" required>
-                <button type="submit">Realizar Orden</button>
-            </form>
+        <!-- Sección de ordenamiento -->
+        <section id="ordenar" class="order-section">
+            <h2 class="section-title"><i class="fas fa-shopping-cart"></i> Realizar Orden</h2>
+            <div class="order-container">
+                <form id="formulario-orden" class="order-form">
+                    <div class="form-group">
+                        <input type="text" id="nombre" placeholder="Nombre completo" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="email" placeholder="Correo electrónico" required>
+                    </div>
+                    <div class="form-group">
+                        <select id="producto-seleccionado" required>
+                            <option value="">Selecciona un producto</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <input type="number" id="cantidad" placeholder="Cantidad" min="1" value="1" required>
+                    </div>
+                    <button type="submit" class="submit-button">Realizar Orden</button>
+                </form>
+            </div>
         </section>
 
-        <section id="resenas">
-            <h2>Reseñas de Clientes</h2>
-            <div id="lista-resenas">
+        <!-- Sección de reseñas -->
+        <section id="resenas" class="reviews-section">
+            <h2 class="section-title"><i class="fas fa-comments"></i> Reseñas de Clientes</h2>
+            <div id="lista-resenas" class="reviews-grid">
                 <!-- Las reseñas se cargarán aquí -->
             </div>
         </section>
     </main>
 
+    <!-- Footer mejorado -->
     <footer>
-        <p>&copy; 2023 Joysfarm. Todos los derechos reservados.</p>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Joysfarm</h3>
+                <p>Productos naturales y ecológicos de la más alta calidad para tu bienestar.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Enlaces Rápidos</h4>
+                <ul>
+                    <li><a href="#productos">Productos</a></li>
+                    <li><a href="#ordenar">Ordenar</a></li>
+                    <li><a href="#resenas">Reseñas</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contáctanos</h4>
+                <p><i class="fas fa-envelope"></i> info@joysfarm.com</p>
+                <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 Joysfarm. Todos los derechos reservados.</p>
+        </div>
     </footer>
 
     <script src="js/main.js"></script>

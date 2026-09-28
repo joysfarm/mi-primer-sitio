@@ -1,83 +1,225 @@
+/* Reset básico y variables CSS */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-body {
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-    color: #333;
+:root {
+    --primary-color: #2e7d32;
+    --secondary-color: #4caf50;
+    --accent-color: #ff9800;
+    --light-color: #f5f5f5;
+    --dark-color: #333;
+    --white: #ffffff;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
 }
 
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: var(--dark-color);
+    background-color: #fafafa;
+}
+
+/* Header mejorado */
 header {
-    background-color: #4CAF50;
-    color: white;
+    background: linear-gradient(135deg, var(--primary-color), #1b5e20);
+    color: var(--white);
     padding: 1rem 0;
     position: sticky;
     top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow);
 }
 
-header h1 {
+.header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 0 1rem;
 }
 
-nav ul {
+.logo {
+    font-size: 2rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+
+.logo i {
+    margin-right: 10px;
+    color: var(--accent-color);
+}
+
+.nav-menu ul {
     display: flex;
     list-style: none;
     justify-content: center;
     flex-wrap: wrap;
 }
 
-nav ul li {
-    margin: 0.5rem;
+.nav-menu li {
+    margin: 0 0.5rem;
 }
 
-nav ul li a {
-    color: white;
+.nav-menu a {
+    color: var(--white);
     text-decoration: none;
-    padding: 0.5rem 1rem;
+    padding: 0.75rem 1rem;
     border-radius: 4px;
-    transition: background-color 0.3s;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
 }
 
-nav ul li a:hover {
-    background-color: #45a049;
+.nav-menu a i {
+    margin-right: 8px;
 }
 
+.nav-menu a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.cart-button {
+    background: var(--accent-color);
+    color: var(--white);
+    border: none;
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+}
+
+.cart-button:hover {
+    background: #e68a00;
+    transform: translateY(-2px);
+}
+
+.cart-count {
+    margin-left: 5px;
+    background: var(--white);
+    color: var(--primary-color);
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(rgba(46, 125, 50, 0.8), rgba(27, 94, 32, 0.9)), url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');
+    background-size: cover;
+    background-position: center;
+    color: var(--white);
+    text-align: center;
+    padding: 5rem 1rem;
+}
+
+.hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hero-title {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.cta-button {
+    display: inline-block;
+    background-color: var(--accent-color);
+    color: var(--white);
+    padding: 1rem 2rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: var(--transition);
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+}
+
+.cta-button:hover {
+    background-color: #e68a00;
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+}
+
+/* Secciones principales */
 main {
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem 1rem;
 }
 
-section {
-    margin-bottom: 3rem;
+.section-title {
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-h2 {
-    color: #4CAF50;
-    margin-bottom: 1rem;
+.section-title i {
+    margin-right: 10px;
+}
+
+/* Productos */
+.featured-products {
+    margin-bottom: 3rem;
 }
 
 .productos-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
     margin-top: 1rem;
 }
 
 .producto-card {
-    border: 1px solid #ddd;
+    background-color: var(--white);
     border-radius: 8px;
-    padding: 1rem;
+    padding: 1.5rem;
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    transition: transform 0.3s;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
 }
 
 .producto-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-10px);
+    box-shadow: 0 12px 15px rgba(0, 0, 0, 0.1);
+}
+
+.producto-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
 }
 
 .producto-imagen {
@@ -86,66 +228,229 @@ h2 {
     object-fit: cover;
     border-radius: 4px;
     margin-bottom: 1rem;
+    transition: var(--transition);
 }
 
-.formulario-orden {
-    background-color: #f4f4f4;
+.producto-card:hover .producto-imagen {
+    transform: scale(1.05);
+}
+
+.producto-nombre {
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+    color: var(--dark-color);
+}
+
+.producto-precio {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.producto-descripcion {
+    color: #666;
+    margin-bottom: 1.5rem;
+    min-height: 60px;
+}
+
+/* Formulario de orden */
+.order-section {
+    background-color: var(--white);
     padding: 2rem;
     border-radius: 8px;
+    margin-bottom: 3rem;
+    box-shadow: var(--shadow);
 }
 
-#formulario-orden input,
-#formulario-orden select,
-#formulario-orden button {
-    display: block;
+.order-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.order-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.order-form input,
+.order-form select {
     width: 100%;
-    margin-bottom: 1rem;
-    padding: 0.75rem;
+    padding: 1rem;
     border: 1px solid #ddd;
     border-radius: 4px;
+    font-size: 1rem;
+    transition: var(--transition);
 }
 
-#formulario-orden button {
-    background-color: #4CAF50;
-    color: white;
+.order-form input:focus,
+.order-form select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+.submit-button {
+    background: linear-gradient(135deg, var(--primary-color), #1b5e20);
+    color: var(--white);
     border: none;
+    padding: 1.2rem;
+    border-radius: 4px;
     cursor: pointer;
     font-size: 1.1rem;
-    transition: background-color 0.3s;
+    font-weight: bold;
+    transition: var(--transition);
 }
 
-#formulario-orden button:hover {
-    background-color: #45a049;
+.submit-button:hover {
+    background: linear-gradient(135deg, #1b5e20, #0d47a1);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
 }
 
-.lista-resenas {
+/* Reseñas */
+.reviews-section {
+    margin-bottom: 3rem;
+}
+
+.reviews-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
+    gap: 2rem;
     margin-top: 1rem;
 }
 
 .resena-card {
-    border: 1px solid #ddd;
+    background-color: var(--white);
     border-radius: 8px;
-    padding: 1rem;
-    background-color: #f9f9f9;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    position: relative;
+}
+
+.resena-card::before {
+    content: """;
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    font-size: 4rem;
+    color: var(--accent-color);
+    opacity: 0.3;
+    font-family: Georgia, serif;
 }
 
 .resena-card p {
     font-style: italic;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 1;
 }
 
 .resena-card .autor {
     font-weight: bold;
-    color: #4CAF50;
+    color: var(--primary-color);
+    text-align: right;
 }
 
+/* Footer mejorado */
 footer {
-    background-color: #333;
-    color: white;
-    text-align: center;
+    background: linear-gradient(135deg, #333, #222);
+    color: var(--white);
+    padding: 3rem 0 1rem;
+    margin-top: 3rem;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    padding: 0 1rem 2rem;
+}
+
+.footer-section h3 {
+    color: var(--accent-color);
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.footer-section h4 {
+    color: var(--secondary-color);
+    margin-bottom: 1rem;
+}
+
+.footer-section p {
+    margin-bottom: 0.5rem;
+}
+
+.footer-section ul {
+    list-style: none;
+}
+
+.footer-section ul li {
+    margin-bottom: 0.5rem;
+}
+
+.footer-section ul li a {
+    color: var(--white);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.footer-section ul li a:hover {
+    color: var(--accent-color);
+    padding-left: 5px;
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
     padding: 1rem 0;
-    margin-top: 2rem;
+    text-align: center;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .nav-menu ul {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+    
+    .productos-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .section-title {
+        font-size: 1.5rem;
+    }
+    
+    .hero-title {
+        font-size: 1.5rem;
+    }
+    
+    .cart-button {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.9rem;
+    }
 }
