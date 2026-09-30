@@ -1,7 +1,7 @@
 // Configuración de Supabase
-// En producción, estas variables se deberían cargar desde variables de entorno
-const supabaseUrl = 'https://tu-proyecto.supabase.co';
-const supabaseKey = 'tu-anon-key-aqui';
+// Para entornos estáticos, cargamos las credenciales directamente del .env
+const supabaseUrl = 'https://wwmenejssrcqcwtbcecz.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3bWVuZWpzc3JjcWN3dGJjZWN6Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MDQ1MDczNCwiZXhwIjoyMTA2MDI2NzM0fQ.B_7caZtsxQfEUZOE0z6TA1wQCWUp7YFyr2SGBWYjysk';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Elementos del DOM
@@ -10,12 +10,41 @@ const formularioOrden = document.getElementById('formulario-orden');
 const productoSeleccionado = document.getElementById('producto-seleccionado');
 const listaResenas = document.getElementById('lista-resenas');
 const cartCount = document.querySelector('.cart-count');
+const cartDrawer = document.getElementById('cart-drawer');
+const cartItems = document.getElementById('cart-items');
+const cartTotal = document.getElementById('total-amount');
+const checkoutBtn = document.getElementById('checkout-btn');
+const closeModal = document.querySelector('.close-modal');
+const closeCart = document.querySelector('.close-cart');
+const quickViewModal = document.getElementById('quick-view-modal');
+const quickViewProduct = document.getElementById('quick-view-product');
+
+// Estado del carrito
+let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
 
 // Inicializar la aplicación
 document.addEventListener('DOMContentLoaded', async () => {
     await cargarProductos();
     await cargarResenas();
     actualizarContadorCarrito();
+    
+    // Eventos para el carrito y modales
+    document.getElementById('cart-button').addEventListener('click', abrirCarrito);
+    closeCart.addEventListener('click', cerrarCarrito);
+    cartDrawer.addEventListener('click', function(e) {
+        if (e.target === this) cerrarCarrito();
+    });
+    
+    checkoutBtn.addEventListener('click', procederAlPago);
+    
+    // Eventos para el modal
+    closeModal.addEventListener('click', function() {
+        quickViewModal.style.display = 'none';
+    });
+    
+    window.addEventListener('click', function(e) {
+        if (e.target === quickViewModal) quickViewModal.style.display = 'none';
+    });
     
     // Añadir evento para el formulario de orden
     formularioOrden.addEventListener('submit', manejarEnvioOrden);
@@ -51,6 +80,9 @@ async function cargarProductos() {
                 <button class="add-to-cart-btn" data-id="${producto.id}" data-name="${producto.nombre}" data-price="${producto.precio}">
                     <i class="fas fa-shopping-cart"></i> Agregar al Carrito
                 </button>
+                <button class="quick-view-btn" data-id="${producto.id}">
+                    <i class="fas fa-eye"></i> Vista Rápida
+                </button>
             `;
             
             listaProductos.appendChild(productoCard);
@@ -70,6 +102,15 @@ async function cargarProductos() {
                 const price = this.getAttribute('data-price');
                 agregarAlCarrito({id, name, price});
                 actualizarContadorCarrito();
+                mostrarNotificacion(`¡${name} agregado al carrito!`);
+            });
+        });
+        
+        // Añadir eventos a los botones de vista rápida
+        document.querySelectorAll('.quick-view-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const id = this.getAttribute('data-id');
+                mostrarVistaRapida(id);
             });
         });
     } catch (error) {
@@ -151,21 +192,196 @@ async function manejarEnvioOrden(e) {
     }
 }
 
-// Función para agregar al carrito (simulación)
+// Función para agregar al carrito
 function agregarAlCarrito(producto) {
-    // Esto es una simulación. En una implementación real, se usaría localStorage o un sistema más complejo
-    let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-    carrito.push(producto);
-    localStorage.setItem('carrito', JSON.stringify(carrito));
+    // Verificar si el producto ya está en el carrito
+    const existingItem = carrito.find(item => item.id === producto.id);
     
-    // Mostrar notificación
-    mostrarNotificacion(`¡${producto.name} agregado al carrito!`);
+    if (existingItem) {
+        existingItem.cantidad += 1;
+    } else {
+        producto.cantidad = 1;
+        carrito.push(producto);
+    }
+    
+    guardarCarritoEnLocalStorage();
+    actualizarContadorCarrito();
+    actualizarCarritoUI();
+}
+
+// Función para eliminar producto del carrito
+function eliminarDelCarrito(id) {
+    carrito = carrito.filter(item => item.id !== id);
+    guardarCarritoEnLocalStorage();
+    actualizarContadorCarrito();
+    actualizarCarritoUI();
+}
+
+// Función para actualizar cantidad de producto en el carrito
+function actualizarCantidad(id, nuevaCantidad) {
+    if (nuevaCantidad <= 0) {
+        eliminarDelCarrito(id);
+        return;
+    }
+    
+    const item = carrito.find(item => item.id === id);
+    if (item) {
+        item.cantidad = nuevaCantidad;
+        guardarCarritoEnLocalStorage();
+        actualizarCarritoUI();
+    }
+}
+
+// Función para guardar el carrito en localStorage
+function guardarCarritoEnLocalStorage() {
+    localStorage.setItem('carrito', JSON.stringify(carrito));
 }
 
 // Función para actualizar el contador del carrito
 function actualizarContadorCarrito() {
-    const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-    cartCount.textContent = carrito.length;
+    const totalItems = carrito.reduce((total, item) => total + item.cantidad, 0);
+    cartCount.textContent = totalItems;
+}
+
+// Función para actualizar la interfaz del carrito
+function actualizarCarritoUI() {
+    if (carrito.length === 0) {
+        cartItems.innerHTML = '<p class="empty-cart-message">Tu carrito está vacío</p>';
+        cartTotal.textContent = '0.00';
+        return;
+    }
+    
+    let html = '';
+    let total = 0;
+    
+    carrito.forEach(item => {
+        const itemTotal = item.precio * item.cantidad;
+        total += itemTotal;
+        
+        html += `
+            <div class="cart-item">
+                <h4>${item.name}</h4>
+                <p>$${item.precio} x ${item.cantidad}</p>
+                <div class="quantity-controls">
+                    <button class="quantity-btn minus" data-id="${item.id}">-</button>
+                    <span class="quantity">${item.cantidad}</span>
+                    <button class="quantity-btn plus" data-id="${item.id}">+</button>
+                </div>
+                <p class="item-total">$${itemTotal.toFixed(2)}</p>
+                <button class="remove-item-btn" data-id="${item.id}">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        `;
+    });
+    
+    cartItems.innerHTML = html;
+    cartTotal.textContent = total.toFixed(2);
+    
+    // Agregar eventos a los controles de cantidad y eliminación
+    document.querySelectorAll('.quantity-btn.minus').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const id = this.getAttribute('data-id');
+            const item = carrito.find(item => item.id === id);
+            if (item) {
+                actualizarCantidad(id, item.cantidad - 1);
+            }
+        });
+    });
+    
+    document.querySelectorAll('.quantity-btn.plus').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const id = this.getAttribute('data-id');
+            const item = carrito.find(item => item.id === id);
+            if (item) {
+                actualizarCantidad(id, item.cantidad + 1);
+            }
+        });
+    });
+    
+    document.querySelectorAll('.remove-item-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const id = this.getAttribute('data-id');
+            eliminarDelCarrito(id);
+        });
+    });
+}
+
+// Función para abrir carrito
+function abrirCarrito() {
+    actualizarCarritoUI();
+    cartDrawer.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+// Función para cerrar carrito
+function cerrarCarrito() {
+    cartDrawer.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// Función para proceder al pago
+function procederAlPago() {
+    if (carrito.length === 0) {
+        alert('Tu carrito está vacío');
+        return;
+    }
+    
+    alert('Funcionalidad de checkout por implementar. En una versión completa del sitio, aquí se mostraría el formulario de pago.');
+    cerrarCarrito();
+}
+
+// Función para mostrar modal de vista rápida
+async function mostrarVistaRapida(id) {
+    try {
+        const { data, error } = await supabase
+            .from('productos')
+            .select('*')
+            .eq('id', id);
+            
+        if (error) throw error;
+        
+        if (data.length > 0) {
+            const producto = data[0];
+            quickViewProduct.innerHTML = `
+                <div class="quick-view-content">
+                    <div class="quick-view-image">
+                        <img src="${producto.imagen_url || 'https://via.placeholder.com/400x300?text=Producto'}" alt="${producto.nombre}">
+                    </div>
+                    <div class="quick-view-details">
+                        <h3>${producto.nombre}</h3>
+                        <p class="quick-view-price">$${producto.precio}</p>
+                        <p class="quick-view-description">${producto.descripcion || 'Sin descripción disponible'}</p>
+                        <div class="quick-view-features">
+                            <p><i class="fas fa-sun"></i> Lugar: ${producto.lugar || 'Sin especificar'}</p>
+                            <p><i class="fas fa-tint"></i> Riego: ${producto.riego || 'Sin especificar'}</p>
+                            <p><i class="fas fa-ruler"></i> Tamaño: ${producto.tamano || 'Sin especificar'}</p>
+                        </div>
+                        <button class="add-to-cart-btn quick-view-add-to-cart" data-id="${producto.id}" data-name="${producto.nombre}" data-price="${producto.precio}">
+                            <i class="fas fa-shopping-cart"></i> Agregar al Carrito
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            quickViewModal.style.display = 'block';
+            
+            // Añadir evento al botón de agregar del modal
+            const addToCartBtn = document.querySelector('.quick-view-add-to-cart');
+            addToCartBtn.addEventListener('click', function() {
+                const id = this.getAttribute('data-id');
+                const name = this.getAttribute('data-name');
+                const price = this.getAttribute('data-price');
+                agregarAlCarrito({id, name, price});
+                quickViewModal.style.display = 'none';
+                actualizarContadorCarrito();
+                mostrarNotificacion(`¡${name} agregado al carrito!`);
+            });
+        }
+    } catch (error) {
+        console.error('Error cargando producto para vista rápida:', error);
+        alert('Error al cargar la información del producto');
+    }
 }
 
 // Función para mostrar notificaciones
@@ -182,11 +398,14 @@ function mostrarNotificacion(mensaje) {
         right: 20px;
         background-color: #4CAF50;
         color: white;
-        padding: 1rem;
-        border-radius: 4px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         z-index: 1000;
-        animation: slideIn 0.3s, fadeOut 0.5s 2.5s forwards;
+        animation: slideIn 0.3s ease-out, fadeOut 0.5s 2.5s forwards;
+        font-family: var(--font-primary);
+        font-weight: 500;
+        transform: translateX(100%);
     `;
     
     // Añadir animación CSS
@@ -236,6 +455,7 @@ async function testSupabaseConnection() {
             border-radius: 4px;
             margin-bottom: 1rem;
             text-align: center;
+            font-family: var(--font-primary);
         `;
         document.querySelector('main').prepend(errorMsg);
     }

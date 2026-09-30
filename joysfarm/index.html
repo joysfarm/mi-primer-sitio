@@ -6,17 +6,49 @@
     <title>Joysfarm - Productos Naturales</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Supabase client library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0/dist/main.js"></script>
+    
+    <!-- Cart Drawer -->
+    <div id="cart-drawer" class="cart-drawer">
+        <div class="cart-drawer-content">
+            <div class="cart-header">
+                <h3>Carrito de Compras</h3>
+                <button class="close-cart">&times;</button>
+            </div>
+            <div id="cart-items" class="cart-items">
+                <!-- Items will be added here dynamically -->
+                <p class="empty-cart-message">Tu carrito está vacío</p>
+            </div>
+            <div id="cart-total" class="cart-total">
+                Total: $<span id="total-amount">0.00</span>
+            </div>
+            <button id="checkout-btn" class="checkout-button">Proceder al pago</button>
+        </div>
+    </div>
+
+    <!-- Quick View Modal -->
+    <div id="quick-view-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div id="quick-view-product"></div>
+        </div>
+    </div>
+
     <!-- Header con diseño mejorado -->
-    <header>
+    <header class="main-header">
         <div class="header-container">
             <h1 class="logo">Joysfarm</h1>
             <nav class="nav-menu">
                 <ul>
-                    <li><a href="#productos"><i class="fas fa-leaf"></i> Productos</a></li>
-                    <li><a href="#ordenar"><i class="fas fa-shopping-cart"></i> Ordenar</a></li>
-                    <li><a href="#resenas"><i class="fas fa-comments"></i> Reseñas</a></li>
+                    <li><a href="#inicio"><i class="fas fa-home"></i> Inicio</a></li>
+                    <li><a href="#tienda"><i class="fas fa-seedling"></i> Tienda</a></li>
+                    <li><a href="#nosotros"><i class="fas fa-users"></i> Sobre Nosotros</a></li>
+                    <li><a href="#cuidado"><i class="fas fa-hand-holding-water"></i> Cuidado de Plantas</a></li>
+                    <li><a href="#contacto"><i class="fas fa-envelope"></i> Contacto</a></li>
                 </ul>
             </nav>
             <div class="header-actions">
@@ -29,24 +61,162 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="hero-section">
+    <section id="inicio" class="hero-section">
         <div class="hero-content">
-            <h1 class="hero-title">Productos Naturales de la Más Alta Calidad</h1>
-            <p class="hero-subtitle">Descubre nuestra selección de productos orgánicos y ecológicos cuidadosamente seleccionados para tu bienestar.</p>
-            <a href="#productos" class="cta-button">Explorar Productos</a>
+            <h1 class="hero-title">Trae la naturaleza a tu hogar</h1>
+            <p class="hero-subtitle">Descubre nuestra selección de plantas y productos ecológicos cuidadosamente seleccionados para tu bienestar.</p>
+            <a href="#tienda" class="cta-button">Ver Colección</a>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section id="categorias" class="categories-section">
+        <h2 class="section-title"><i class="fas fa-leaf"></i> Categorías Destacadas</h2>
+        <div class="categories-grid">
+            <div class="category-card">
+                <img src="https://images.unsplash.com/photo-1604599408633-e0aef1303719?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Plantas de interior">
+                <h3>Plantas de Interior</h3>
+            </div>
+            <div class="category-card">
+                <img src="https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Plantas de exterior">
+                <h3>Plantas de Exterior</h3>
+            </div>
+            <div class="category-card">
+                <img src="https://images.unsplash.com/photo-1573995101628-5341d40b0f16?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Suculentas">
+                <h3>Suculentas</h3>
+            </div>
+            <div class="category-card">
+                <img src="https://images.unsplash.com/photo-1599253763725-57b2e8b4d1f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Macetas y accesorios">
+                <h3>Macetas y Accesorios</h3>
+            </div>
+            <div class="category-card">
+                <img src="https://images.unsplash.com/photo-1522479242898-1c02d2d4e628?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Herramientas de jardinería">
+                <h3>Herramientas de Jardinería</h3>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products Section -->
+    <section id="tienda" class="featured-products">
+        <h2 class="section-title"><i class="fas fa-seedling"></i> Productos Destacados</h2>
+        <div id="lista-productos" class="productos-grid">
+            <!-- Los productos se cargarán aquí -->
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="nosotros" class="about-section">
+        <div class="about-container">
+            <div class="about-image">
+                <img src="https://images.unsplash.com/photo-1534274951309-6028c1c4a4d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Nuestra historia">
+            </div>
+            <div class="about-content">
+                <h2 class="section-title">Sobre Joysfarm</h2>
+                <p>En Joysfarm nos dedicamos a proporcionar productos naturales y sostenibles para crear espacios verdes en cada hogar. Nuestra misión es hacer que cuidar de las plantas sea fácil, accesible y gratificante.</p>
+                <div class="benefits">
+                    <div class="benefit-card">
+                        <i class="fas fa-truck"></i>
+                        <h4>Entrega a Domicilio</h4>
+                        <p>Enviamos tus plantas directamente a casa</p>
+                    </div>
+                    <div class="benefit-card">
+                        <i class="fas fa-leaf"></i>
+                        <h4>Plantas Garantizadas</h4>
+                        <p>Todas nuestras plantas son seleccionadas cuidadosamente</p>
+                    </div>
+                    <div class="benefit-card">
+                        <i class="fas fa-book"></i>
+                        <h4>Asesoría de Cuidado</h4>
+                        <p>Consejos expertos para mantener tus plantas saludables</p>
+                    </div>
+                    <div class="benefit-card">
+                        <i class="fas fa-box"></i>
+                        <h4>Empaque Seguro</h4>
+                        <p>Packaging especializado para garantizar tu planta llegue sana</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Plant Care Tips Section -->
+    <section id="cuidado" class="care-tips-section">
+        <h2 class="section-title"><i class="fas fa-hand-holding-water"></i> Consejos de Cuidado</h2>
+        <div class="tips-grid">
+            <div class="tip-card">
+                <img src="https://images.unsplash.com/photo-1530406766658-ef7b9e4d021f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Riego">
+                <h3>Riego Adecuado</h3>
+                <p>Evita el agua estancada en el suelo. El riego adecuado es clave para mantener tus plantas saludables.</p>
+            </div>
+            <div class="tip-card">
+                <img src="https://images.unsplash.com/photo-1574904396259-1a7780c91b10?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Luz">
+                <h3>Luz Natural</h3>
+                <p>La mayoría de las plantas necesitan luz solar indirecta para crecer bien. Revisa las necesidades de cada planta.</p>
+            </div>
+            <div class="tip-card">
+                <img src="https://images.unsplash.com/photo-1596058305721-0486fc5f2dce?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Tierra">
+                <h3>Suelo Nutritivo</h3>
+                <p>Usa suelos con buenas propiedades de drenaje y riego para que tus plantas se desarrollen.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials-section">
+        <h2 class="section-title"><i class="fas fa-comments"></i> Lo Que Dicen Nuestros Clientes</h2>
+        <div class="testimonials-container">
+            <div class="testimonial-slider">
+                <div class="testimonial-card">
+                    <p>"Las plantas que compré de Joysfarm se han adaptado perfectamente a mi hogar. ¡Muy recomendable!"</p>
+                    <div class="rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="client-name">María Rodríguez</p>
+                </div>
+                <div class="testimonial-card">
+                    <p>"Excelente atención y productos de alta calidad. Las recomendaciones sobre cuidado son muy útiles."</p>
+                    <div class="rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <p class="client-name">Carlos Mendoza</p>
+                </div>
+                <div class="testimonial-card">
+                    <p>"Me encanta la variedad de productos. Las plantas llegan sanas y con las instrucciones necesarias."</p>
+                    <div class="rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="client-name">Ana Gómez</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="newsletter-section">
+        <div class="newsletter-container">
+            <h2>Recibe Tips de Jardinería</h2>
+            <p>Suscríbete para recibir consejos, promociones y novedades</p>
+            <form id="newsletter-form" class="newsletter-form">
+                <input type="email" id="email-input" placeholder="Tu correo electrónico" required>
+                <button type="submit" class="subscribe-button">Suscribirme</button>
+            </form>
         </div>
     </section>
 
     <!-- Main Content -->
     <main>
-        <!-- Sección de productos destacados -->
-        <section id="productos" class="featured-products">
-            <h2 class="section-title"><i class="fas fa-leaf"></i> Nuestros Productos</h2>
-            <div id="lista-productos" class="productos-grid">
-                <!-- Los productos se cargarán aquí -->
-            </div>
-        </section>
-
         <!-- Sección de ordenamiento -->
         <section id="ordenar" class="order-section">
             <h2 class="section-title"><i class="fas fa-shopping-cart"></i> Realizar Orden</h2>
@@ -81,24 +251,40 @@
     </main>
 
     <!-- Footer mejorado -->
-    <footer>
+    <footer id="contacto">
         <div class="footer-content">
             <div class="footer-section">
                 <h3>Joysfarm</h3>
                 <p>Productos naturales y ecológicos de la más alta calidad para tu bienestar.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
             </div>
             <div class="footer-section">
                 <h4>Enlaces Rápidos</h4>
                 <ul>
-                    <li><a href="#productos">Productos</a></li>
-                    <li><a href="#ordenar">Ordenar</a></li>
-                    <li><a href="#resenas">Reseñas</a></li>
+                    <li><a href="#inicio">Inicio</a></li>
+                    <li><a href="#tienda">Tienda</a></li>
+                    <li><a href="#nosotros">Sobre Nosotros</a></li>
+                    <li><a href="#cuidado">Cuidado de Plantas</a></li>
+                    <li><a href="#contacto">Contacto</a></li>
                 </ul>
             </div>
             <div class="footer-section">
                 <h4>Contáctanos</h4>
                 <p><i class="fas fa-envelope"></i> info@joysfarm.com</p>
                 <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                <p><i class="fas fa-map-marker-alt"></i> Ciudad, País</p>
+            </div>
+            <div class="footer-section">
+                <h4>Métodos de Pago</h4>
+                <div class="payment-methods">
+                    <i class="fab fa-cc-visa"></i>
+                    <i class="fab fa-cc-mastercard"></i>
+                    <i class="fab fa-cc-paypal"></i>
+                </div>
             </div>
         </div>
         <div class="footer-bottom">
