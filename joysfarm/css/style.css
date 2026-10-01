@@ -289,10 +289,11 @@ body {
     margin-bottom: 0;
 }
 
-/* Featured Products Section */
+/* Sección de productos destacados */
 .featured-products {
     padding: 4rem 1rem;
     background-color: var(--cream-white);
+    margin-bottom: 2rem;
 }
 
 .featured-products .section-title {
