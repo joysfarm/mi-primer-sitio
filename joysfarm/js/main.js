@@ -207,6 +207,17 @@ function agregarAlCarrito(producto) {
     guardarCarritoEnLocalStorage();
     actualizarContadorCarrito();
     actualizarCarritoUI();
+    
+    // Mostrar notificación específica para el botón de agregar
+    const addToCartBtn = event.target.closest('.add-to-cart-btn');
+    if (addToCartBtn) {
+        // Cambiamos temporalmente el texto del botón a "Agregado"
+        const originalText = addToCartBtn.innerHTML;
+        addToCartBtn.innerHTML = '<i class="fas fa-check"></i> Agregado';
+        setTimeout(() => {
+            addToCartBtn.innerHTML = originalText;
+        }, 1500);
+    }
 }
 
 // Función para eliminar producto del carrito
@@ -237,10 +248,9 @@ function guardarCarritoEnLocalStorage() {
     localStorage.setItem('carrito', JSON.stringify(carrito));
 }
 
-// Función para actualizar el contador del carrito
-function actualizarContadorCarrito() {
-    const totalItems = carrito.reduce((total, item) => total + item.cantidad, 0);
-    cartCount.textContent = totalItems;
+// Función para calcular total del carrito
+function calcularTotal() {
+    return carrito.reduce((total, item) => total + (item.precio * item.cantidad), 0);
 }
 
 // Función para actualizar la interfaz del carrito
@@ -327,8 +337,22 @@ function procederAlPago() {
         return;
     }
     
-    alert('Funcionalidad de checkout por implementar. En una versión completa del sitio, aquí se mostraría el formulario de pago.');
+    // Mostrar lista de productos en el carrito antes de finalizar orden
+    let cartItems = 'Productos en tu carrito:\n\n';
+    carrito.forEach(item => {
+        cartItems += `- ${item.name} x${item.cantidad} - $${(item.precio * item.cantidad).toFixed(2)}\n`;
+    });
+    cartItems += `\nTotal: $${calcularTotal().toFixed(2)}`;
+    
+    // Mostrar mensaje con productos antes de proceder al pago
+    alert('¡Compra confirmada! Detalle de tu orden:\n\n' + cartItems);
     cerrarCarrito();
+    
+    // Limpiar el carrito después de compra
+    carrito = [];
+    guardarCarritoEnLocalStorage();
+    actualizarContadorCarrito();
+    actualizarCarritoUI();
 }
 
 // Función para mostrar modal de vista rápida
