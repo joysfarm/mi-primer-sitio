@@ -63,10 +63,13 @@ async function cargarProductos() {
         productoSeleccionado.innerHTML = '<option value="">Selecciona un producto</option>';
         
         // Añadir mensaje si no hay productos
-        if (data.length === 0) {
+        if (!data || data.length === 0) {
             listaProductos.innerHTML = '<p class="no-products">No hay productos disponibles actualmente.</p>';
             return;
         }
+        
+        // Create all elements at once for better performance
+        const fragment = document.createDocumentFragment();
         
         data.forEach(producto => {
             // Mostrar productos en la sección de productos
@@ -75,7 +78,7 @@ async function cargarProductos() {
             productoCard.innerHTML = `
                 <img src="${producto.imagen_url || 'https://via.placeholder.com/300x200?text=Producto'}" alt="${producto.nombre}" class="producto-imagen">
                 <h3 class="producto-nombre">${producto.nombre}</h3>
-                <p class="producto-precio">$${producto.precio}</p>
+                <p class="producto-precio">$${parseFloat(producto.precio).toFixed(2)}</p>
                 <p class="producto-descripcion">${producto.descripcion || 'Sin descripción disponible'}</p>
                 <button class="add-to-cart-btn" data-id="${producto.id}" data-name="${producto.nombre}" data-price="${producto.precio}">
                     <i class="fas fa-shopping-cart"></i> Agregar al Carrito
@@ -85,34 +88,39 @@ async function cargarProductos() {
                 </button>
             `;
             
-            listaProductos.appendChild(productoCard);
+            fragment.appendChild(productoCard);
             
             // Agregar al selector de productos en el formulario
             const opcion = document.createElement('option');
             opcion.value = producto.id;
-            opcion.textContent = `${producto.nombre} - $${producto.precio}`;
+            opcion.textContent = `${producto.nombre} - $${parseFloat(producto.precio).toFixed(2)}`;
             productoSeleccionado.appendChild(opcion);
         });
         
-        // Añadir eventos a los botones de agregar al carrito
-        document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const id = this.getAttribute('data-id');
-                const name = this.getAttribute('data-name');
-                const price = this.getAttribute('data-price');
-                agregarAlCarrito({id, name, price});
-                actualizarContadorCarrito();
-                mostrarNotificacion(`¡${name} agregado al carrito!`);
-            });
-        });
+        listaProductos.appendChild(fragment);
         
-        // Añadir eventos a los botones de vista rápida
-        document.querySelectorAll('.quick-view-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const id = this.getAttribute('data-id');
-                mostrarVistaRapida(id);
+        // Añadir eventos a los botones de agregar al carrito y vista rápida
+        // (We attach events after DOM insertion to ensure elements exist)
+        setTimeout(() => {
+            document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    const name = this.getAttribute('data-name');
+                    const price = this.getAttribute('data-price');
+                    agregarAlCarrito({id, name, price});
+                    actualizarContadorCarrito();
+                    mostrarNotificacion(`¡${name} agregado al carrito!`);
+                });
             });
-        });
+            
+            document.querySelectorAll('.quick-view-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    mostrarVistaRapida(id);
+                });
+            });
+        }, 0);
+        
     } catch (error) {
         console.error('Error cargando productos:', error);
         listaProductos.innerHTML = '<p class="error-message">Error al cargar productos. Por favor inténtalo más tarde.</p>';
@@ -487,3 +495,25 @@ async function testSupabaseConnection() {
 
 // Probar conexión cuando se carga la página
 testSupabaseConnection();
+
+// Debug function to check what's in the database
+async function debugProducts() {
+    try {
+        const { data, error } = await supabase
+            .from('productos')
+            .select('*');
+            
+        if (error) {
+            console.error('Error en debug:', error);
+            return;
+        }
+        
+        console.log('Productos cargados:', data);
+        console.log('Número de productos:', data.length);
+    } catch (err) {
+        console.error('Error en debug de productos:', err);
+    }
+}
+
+// Call debug function for testing
+setTimeout(debugProducts, 2000);
