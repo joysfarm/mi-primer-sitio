@@ -53,17 +53,26 @@ document.addEventListener('DOMContentLoaded', async () => {
 // Función para cargar productos
 async function cargarProductos() {
     try {
+        console.log('Iniciando carga de productos...');
+        
         const { data, error } = await supabase
             .from('productos')
             .select('*');
             
-        if (error) throw error;
+        if (error) {
+            console.error('Error de Supabase:', error);
+            throw error;
+        }
+        
+        console.log('Datos recibidos:', data);
+        console.log('Número de productos:', data ? data.length : 0);
         
         listaProductos.innerHTML = '';
         productoSeleccionado.innerHTML = '<option value="">Selecciona un producto</option>';
         
         // Añadir mensaje si no hay productos
         if (!data || data.length === 0) {
+            console.log('No hay productos para mostrar');
             listaProductos.innerHTML = '<p class="no-products">No hay productos disponibles actualmente.</p>';
             return;
         }
@@ -72,6 +81,8 @@ async function cargarProductos() {
         const fragment = document.createDocumentFragment();
         
         data.forEach(producto => {
+            console.log('Procesando producto:', producto.nombre);
+            
             // Mostrar productos en la sección de productos
             const productoCard = document.createElement('div');
             productoCard.className = 'producto-card';
@@ -98,31 +109,10 @@ async function cargarProductos() {
         });
         
         listaProductos.appendChild(fragment);
-        
-        // Añadir eventos a los botones de agregar al carrito y vista rápida
-        // (We attach events after DOM insertion to ensure elements exist)
-        setTimeout(() => {
-            document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const id = this.getAttribute('data-id');
-                    const name = this.getAttribute('data-name');
-                    const price = this.getAttribute('data-price');
-                    agregarAlCarrito({id, name, price});
-                    actualizarContadorCarrito();
-                    mostrarNotificacion(`¡${name} agregado al carrito!`);
-                });
-            });
-            
-            document.querySelectorAll('.quick-view-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const id = this.getAttribute('data-id');
-                    mostrarVistaRapida(id);
-                });
-            });
-        }, 0);
+        console.log('Productos añadidos al DOM');
         
     } catch (error) {
-        console.error('Error cargando productos:', error);
+        console.error('Error completo cargando productos:', error);
         listaProductos.innerHTML = '<p class="error-message">Error al cargar productos. Por favor inténtalo más tarde.</p>';
     }
 }
