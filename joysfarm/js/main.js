@@ -46,6 +46,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (e.target === quickViewModal) quickViewModal.style.display = 'none';
     });
     
+    // Add event listeners to "Agregar al Carrito" buttons after loading products
+    listaProductos.addEventListener('click', function(e) {
+        if (e.target.closest('.add-to-cart-btn')) {
+            const btn = e.target.closest('.add-to-cart-btn');
+            const id = btn.getAttribute('data-id');
+            const name = btn.getAttribute('data-name');
+            const price = parseFloat(btn.getAttribute('data-price'));
+            
+            agregarAlCarrito({id, name, price});
+        }
+    });
+    
     // Añadir evento para el formulario de orden
     formularioOrden.addEventListener('submit', manejarEnvioOrden);
 });
@@ -110,6 +122,14 @@ async function cargarProductos() {
         
         listaProductos.appendChild(fragment);
         console.log('Productos añadidos al DOM');
+        
+        // Add event listeners for quick view buttons after loading
+        document.querySelectorAll('.quick-view-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const id = this.getAttribute('data-id');
+                mostrarVistaRapida(id);
+            });
+        });
         
     } catch (error) {
         console.error('Error completo cargando productos:', error);
@@ -372,7 +392,7 @@ async function mostrarVistaRapida(id) {
                     </div>
                     <div class="quick-view-details">
                         <h3>${producto.nombre}</h3>
-                        <p class="quick-view-price">$${producto.precio}</p>
+                        <p class="quick-view-price">$${parseFloat(producto.precio).toFixed(2)}</p>
                         <p class="quick-view-description">${producto.descripcion || 'Sin descripción disponible'}</p>
                         <div class="quick-view-features">
                             <p><i class="fas fa-sun"></i> Lugar: ${producto.lugar || 'Sin especificar'}</p>
@@ -390,15 +410,17 @@ async function mostrarVistaRapida(id) {
             
             // Añadir evento al botón de agregar del modal
             const addToCartBtn = document.querySelector('.quick-view-add-to-cart');
-            addToCartBtn.addEventListener('click', function() {
-                const id = this.getAttribute('data-id');
-                const name = this.getAttribute('data-name');
-                const price = this.getAttribute('data-price');
-                agregarAlCarrito({id, name, price});
-                quickViewModal.style.display = 'none';
-                actualizarContadorCarrito();
-                mostrarNotificacion(`¡${name} agregado al carrito!`);
-            });
+            if (addToCartBtn) {
+                addToCartBtn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    const name = this.getAttribute('data-name');
+                    const price = parseFloat(this.getAttribute('data-price'));
+                    agregarAlCarrito({id, name, price});
+                    quickViewModal.style.display = 'none';
+                    actualizarContadorCarrito();
+                    mostrarNotificacion(`¡${name} agregado al carrito!`);
+                });
+            }
         }
     } catch (error) {
         console.error('Error cargando producto para vista rápida:', error);
